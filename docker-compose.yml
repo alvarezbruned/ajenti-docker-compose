@@ -1,0 +1,48 @@
+version: '2'
+
+services:
+    ajenti-app:
+        container_name: ajenti-nginx-php
+        image: albertalvarezbruned/ajentinginx
+        ports:
+            - 8000:8000
+            - 80:80
+            - 443:443
+        volumes:
+            - ./:/srv
+            - ajenti:/etc/ajenti
+            - composer:/root/.composer
+        links:
+            - ajenti-mysql
+            - ajenti-postgres
+        tty: true
+    
+    ajenti-mysql:
+        container_name: ajenti-mysql
+        image: mysql:5.7.12
+        environment:
+            MYSQL_ROOT_PASSWORD: secret
+        volumes:
+            - mysql:/var/lib/mysql
+        ports:
+            - 3306:3306
+
+    ajenti-postgres:
+        container_name: ajenti-postgres
+        image: postgres:9.6
+        environment:
+            POSTGRES_PASSWORD: secret
+        volumes:
+            - postgres:/var/lib/postgresql/data
+        ports:
+            - 5432:5432
+
+volumes:
+    ajenti:
+        driver: local
+    mysql:
+        driver: local
+    postgres:
+        driver: local
+    composer:
+        driver: local
